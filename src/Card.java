@@ -22,4 +22,17 @@ public class Card {
     public String toString() {
         return value + suit;
     }
+
+    private int getCardValue(Card card) {
+        switch (card.getValue()) {
+            case "J":
+            case "Q":
+            case "K":
+                return 10;
+            case "A":
+                return 11; // adjust in score calculation
+            default:
+                return Integer.parseInt(card.getValue());
+        }
+    }
 }
