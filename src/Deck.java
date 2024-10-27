@@ -11,7 +11,7 @@ public class Deck {
 
     public Deck() {
         cards = new ArrayList<>();
-        String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        String[] suits = {"C", "D", "H", "S"}; // Clubs, Diamonds, Hearts, Spades
         String[] values = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
         for (String suit : suits) {
