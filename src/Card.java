@@ -1,4 +1,5 @@
-/* define the properties for suit and values
+/*
+define the properties for suit and values
 implement a constructor and methods for getting card details
  */
 public class Card {
@@ -16,5 +17,9 @@ public class Card {
 
     public String getValue() {
         return value;
+    }
+
+    public String toString() {
+        return value + suit;
     }
 }
