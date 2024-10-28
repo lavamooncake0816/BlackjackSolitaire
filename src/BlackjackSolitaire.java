@@ -32,6 +32,10 @@ public class BlackjackSolitaire {
                 played = placeCard(card, position);
             }
         }
+
+        int finalScore = calculateScore();
+
+        System.out.println("Game over! You scored " + finalScore + " points.");
     }
 
     private void displayGrid() {
@@ -65,5 +69,64 @@ public class BlackjackSolitaire {
         }
     }
 
+    private int calculateScore() {
+        int totalScore = 0;
 
+        // score each row
+        for (int row = 0; row < grid.length; row++) {
+            totalScore += calculateHandScore(row, true); // indicates it's a row
+        }
+
+        for (int col = 0; col < grid[0].length; col++) {
+            totalScore += calculateHandScore(col, false); // indicates it's a col
+        }
+
+        return totalScore;
+    }
+
+    private int calculateHandScore(int idx, boolean isRow) {
+        int handScore = 0;
+        int acesCount = 0;
+        int cardCount = 0;
+
+        // calculate the sum based on whether we are processing a row or a col
+        for (int i = 0; i < (isRow ? grid[idx].length : grid.length); i++) {
+            Card card = isRow ? grid[idx][i] : grid[i][idx];
+
+            if (card != null) {
+                int cardValue = card.getCardValue(card);
+                handScore += cardValue;
+                cardCount++;
+
+                // count Aces (temporary)
+                if (card.getValue().equals("A")) {
+                    acesCount++;
+                }
+            }
+        }
+
+        // determine the hand type and calculate points (don't forget adjusting Aces)
+        while (handScore > 21 && acesCount > 0) {
+            handScore -= 10;
+            acesCount--;
+        }
+
+        if (handScore == 21 && cardCount == 2) {
+            return 10; // Blackjack
+        } else if (handScore == 21 && (acesCount >= 3 && acesCount <= 5)) {
+            return 7;
+        } else if (handScore == 20) {
+            return 5;
+        } else if (handScore == 19){
+            return 4;
+        } else if (handScore == 18){
+            return 3;
+        } else if (handScore == 17){
+            return 2;
+        } else if (handScore <= 16){
+            return 1;
+        } else {
+            return 0; // hand of any size that sums to 22 or more (bust)
+        }
+    }
 }
