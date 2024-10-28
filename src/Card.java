@@ -23,7 +23,7 @@ public class Card {
         return value + suit;
     }
 
-    private int getCardValue(Card card) {
+    public int getCardValue(Card card) {
         switch (card.getValue()) {
             case "J":
             case "Q":
@@ -32,7 +32,7 @@ public class Card {
             case "A":
                 return 11; // adjust in score calculation
             default:
-                return Integer.parseInt(card.getValue());
+                return Integer.parseInt(value);
         }
     }
 }
