@@ -3,7 +3,10 @@ create a grid to hold the cards
 initialise a deck and keep track of discards
 implement the main game loop
  */
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.HashSet;
 
 public class BlackjackSolitaire {
     private Card[][] grid;
@@ -16,55 +19,116 @@ public class BlackjackSolitaire {
         deck = new Deck();
         scanner = new Scanner(System.in);
         discardCount = 0;
+
+        // Initialise the grid and randomly assign discard spots
+        initialiseGridWithDiscardSpots(); // No need to display the grid here
+    }
+
+    private Set<Integer> initialiseGridWithDiscardSpots() {
+        Random rand = new Random();
+        Set<Integer> discardSpots = new HashSet<>();
+
+        // Randomly select 4 unique pos for discards from 1 to 20
+        while (discardSpots.size() < 4) {
+            int spot = rand.nextInt(20) + 1; // Generate a number between 1 and 20
+            discardSpots.add(spot); // Add the position to the set
+        }
+
+        // Fill the grid with null to indicate all positions are initially empty
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                grid[row][col] = null;
+            }
+        }
+        return discardSpots;
+    }
+
+    private void displayGridWithDiscardSpots(Set<Integer> discardSpots) {
+        System.out.println("Grid positions (D marks discard spots):");
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                int spotIdx = row * 5 + col + 1;
+                if (discardSpots.contains(spotIdx)) {
+                    System.out.println("D "); // Mark discard positions
+                } else {
+                    if (grid[row][col] == null) {
+                        System.out.print((row * 5 + col + 1) + " "); // Show position numbers for empty scoring spots
+                    } else {
+                        System.out.print(grid[row][col].toString() + " "); // Show the card representation
+                    }
+                }
+            }
+            System.out.println(); // New line after each row
+        }
     }
 
     public void play() {
+        Set<Integer> discardSpots = initialiseGridWithDiscardSpots();
+        displayGridWithDiscardSpots(discardSpots); // Show the current state of the grid
+
         while (discardCount < 4) {
-            displayGrid();
             System.out.println("Discards remaining: " + (4 - discardCount));
+
             Card card = deck.dealCard();
             System.out.println("Your card: " + card);
 
             boolean played = false;
             // the loop will repeat if the card wasn't played successfully
             while (!played) {
-                int position = getPosition();
-                played = placeCard(card, position);
+                int position = getPosition(); // Get the position from user input
+                if (discardSpots.contains(position)) {
+                    // If the position is a discard spot, just increment the discard count
+                    discardCount++;
+                    System.out.println("Card discarded at position: " + position + ".");
+                    played = true;
+                } else {
+                    played = placeCard(card, position); // Try to place the card
+
+                    // Display the grid again after placing the card
+                    if (played) {
+                        displayGridWithDiscardSpots(discardSpots); // Show updated grid with discard indicators
+                    } else {
+                        System.out.println("Please choose another position.");
+                    }
+                }
+            }
+
+            // Check if all scored positions are filled after placing the card
+            if (areAllScoredPositionsFilled()) {
+                System.out.println("All scored positions filled. Scoring the hands...");
+                int finalScore = calculateScore();
+                System.out.println("Game over! You scored " + finalScore + " points.");
+                break; // Exit the loop
             }
         }
-
-        int finalScore = calculateScore();
-
-        System.out.println("Game over! You scored " + finalScore + " points.");
     }
 
-    private void displayGrid() {
+    //
+    private boolean areAllScoredPositionsFilled() {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] == null) {
-                    System.out.print((row * 5 + col + 1) + " ");
-                } else {
-                    System.out.print(grid[row][col] + " ");
+                    return false;
                 }
             }
-            System.out.println();
         }
+        return true;
     }
 
     private int getPosition() {
         System.out.println("Please enter the position of the card you would like to play: ");
-        return scanner.nextInt() - 1; // convert to 0-based idx
+        return scanner.nextInt();
     }
 
     private boolean placeCard(Card card, int position) {
-        int row = position / 5;
-        int col = position % 5;
+        int row = (position - 1)/ 5;
+        int col = (position - 1) % 5;
 
-        if (grid[row][col] == null) {
+        if (row < 4 && col < 5 && grid[row][col] == null) {
             grid[row][col] = card;
-            return true;
+            return true; // Placement successfully
         } else {
-            System.out.println("Position " + position + " already occupied, please choose another position.");
+            System.out.println("Position " + position + " invalid.");
             return false;
         }
     }
