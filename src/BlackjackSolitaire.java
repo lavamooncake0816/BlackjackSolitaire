@@ -82,13 +82,15 @@ public class BlackjackSolitaire {
                     System.out.println("Card discarded at position: " + position + ".");
                     played = true;
                 } else {
-                    played = placeCard(card, position); // Try to place the card
+                    if (isValidPosition(position)) {
+                        played = placeCard(card, position); // Try to place the card
+                    }
 
                     // Display the grid again after placing the card
                     if (played) {
                         displayGridWithDiscardSpots(discardSpots); // Show updated grid with discard indicators
                     } else {
-                        System.out.println("Please choose another position.");
+                        System.out.println("Position " + position + " invalid. Please choose another position.");
                     }
                 }
             }
@@ -101,6 +103,10 @@ public class BlackjackSolitaire {
                 break; // Exit the loop
             }
         }
+    }
+
+    private boolean isValidPosition(int position) {
+        return position >= 1 && position <= 20; // Ensure position is within the valid range
     }
 
     //
@@ -128,7 +134,6 @@ public class BlackjackSolitaire {
             grid[row][col] = card;
             return true; // Placement successfully
         } else {
-            System.out.println("Position " + position + " invalid.");
             return false;
         }
     }
