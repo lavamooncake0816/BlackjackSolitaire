@@ -63,6 +63,7 @@ public class BlackjackSolitaire {
     }
 
     public void play() {
+        Set<Integer> usedDiscardSpots = new HashSet<>();
         Set<Integer> discardSpots = initialiseGridWithDiscardSpots();
         displayGridWithDiscardSpots(discardSpots); // Show the current state of the grid
 
@@ -78,8 +79,14 @@ public class BlackjackSolitaire {
                 int position = getPosition(); // Get the position from user input
 
                 if (discardSpots.contains(position)) {
+                    // Check if this discard spot was already used
+                    if (usedDiscardSpots.contains(position)) {
+                        System.out.println("This discard spot is already used. Choose another position.");
+                        continue;
+                    }
                     // If the position is a discard spot, just increment the discard count
                     discardCount++;
+                    usedDiscardSpots.add(position);
                     System.out.println("Card discarded at position: " + position + ".");
                     played = true;
                 } else {
@@ -112,14 +119,17 @@ public class BlackjackSolitaire {
 
     //
     private boolean areAllScoredPositionsFilled() {
+        int scoringPositionFilled = 0;
+        int totalScoringPositions = 16;
+
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
-                if (grid[row][col] == null) {
-                    return false;
+                if (grid[row][col] instanceof Card) {
+                    scoringPositionFilled++;
                 }
             }
         }
-        return true;
+        return scoringPositionFilled == totalScoringPositions;
     }
 
     private int getPosition() {
