@@ -89,6 +89,12 @@ public class BlackjackSolitaire {
                         // Display the grid again after placing the card
                         if (played) {
                             displayGridWithDiscardSpots(discardSpots); // Show updated grid with discard indicators
+                            if (areAllScoredPositionsFilled()) {
+                                System.out.println("All scored positions filled. Scoring the hands...");
+                                int finalScore = calculateScore();
+                                System.out.println("Game over! You scored " + finalScore + " points.");
+                                return;
+                            }
                         } else {
                             System.out.println("Position " + position + " occupied. Please choose another position.");
                         }
@@ -96,14 +102,6 @@ public class BlackjackSolitaire {
                         System.out.println("Position " + position + " invalid. Please choose another position.");
                     }
                 }
-            }
-
-            // Check if all scored positions are filled after placing the card
-            if (areAllScoredPositionsFilled()) {
-                System.out.println("All scored positions filled. Scoring the hands...");
-                int finalScore = calculateScore();
-                System.out.println("Game over! You scored " + finalScore + " points.");
-                break; // Exit the loop
             }
         }
     }
