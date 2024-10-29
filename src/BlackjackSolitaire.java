@@ -76,6 +76,7 @@ public class BlackjackSolitaire {
             // the loop will repeat if the card wasn't played successfully
             while (!played) {
                 int position = getPosition(); // Get the position from user input
+
                 if (discardSpots.contains(position)) {
                     // If the position is a discard spot, just increment the discard count
                     discardCount++;
@@ -84,11 +85,13 @@ public class BlackjackSolitaire {
                 } else {
                     if (isValidPosition(position)) {
                         played = placeCard(card, position); // Try to place the card
-                    }
 
-                    // Display the grid again after placing the card
-                    if (played) {
-                        displayGridWithDiscardSpots(discardSpots); // Show updated grid with discard indicators
+                        // Display the grid again after placing the card
+                        if (played) {
+                            displayGridWithDiscardSpots(discardSpots); // Show updated grid with discard indicators
+                        } else {
+                            System.out.println("Position " + position + " occupied. Please choose another position.");
+                        }
                     } else {
                         System.out.println("Position " + position + " invalid. Please choose another position.");
                     }
