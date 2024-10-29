@@ -49,10 +49,10 @@ public class BlackjackSolitaire {
             for (int col = 0; col < grid[row].length; col++) {
                 int spotIdx = row * 5 + col + 1;
                 if (discardSpots.contains(spotIdx)) {
-                    System.out.println("D "); // Mark discard positions
+                    System.out.print("D "); // Mark discard positions
                 } else {
                     if (grid[row][col] == null) {
-                        System.out.print((row * 5 + col + 1) + " "); // Show position numbers for empty scoring spots
+                        System.out.print(spotIdx + " "); // Show position numbers for empty scoring spots
                     } else {
                         System.out.print(grid[row][col].toString() + " "); // Show the card representation
                     }
@@ -121,7 +121,7 @@ public class BlackjackSolitaire {
     }
 
     private boolean placeCard(Card card, int position) {
-        int row = (position - 1)/ 5;
+        int row = (position - 1) / 5;
         int col = (position - 1) % 5;
 
         if (row < 4 && col < 5 && grid[row][col] == null) {
